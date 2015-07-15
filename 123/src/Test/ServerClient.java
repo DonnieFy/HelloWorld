@@ -8,18 +8,15 @@ public class ServerClient {
 
 	
 	public static void main(String[] args){
-		int port = 10012;
+		int port = 10001;
 		ServerSocket serverSocket = null;
 		Socket socket = null;
 				
 		try {
 			serverSocket = new ServerSocket(port);
 			while (true){
-				System.out.println(serverSocket.getLocalSocketAddress());
 				socket = serverSocket.accept();
-				System.out.println(socket.getLocalSocketAddress());
 				new NewThread(socket);
-				System.out.println("OK");
 			}
 		}
 		catch (Exception e) {
