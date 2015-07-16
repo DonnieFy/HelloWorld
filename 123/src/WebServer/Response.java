@@ -4,8 +4,8 @@ import java.io.IOException;
 
 public interface Response {
 
-	public void send() throws IOException;
+	public void send(String pathname) throws IOException;
 	
-	public void sendHead();
+	public void sendHead(String str);
 	
 }

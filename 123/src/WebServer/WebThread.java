@@ -1,30 +1,29 @@
 package WebServer;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
 
+import org.slf4j.LoggerFactory;
+
+import org.slf4j.LoggerFactory;	
+import org.slf4j.Logger;
+
 public class WebThread extends Thread{
-	Socket socket;
+	private Socket socket;
+	final static Logger logger = LoggerFactory.getLogger(WebThread.class);
 	
 	public WebThread(Socket socket){
 		this.socket = socket;
-		start();
 	}
 	
 	public static void execute(Socket socket) throws IOException{
-		String root = "D:/MailMaster";
 		WebRequest request = new WebRequest(socket.getInputStream());
-		boolean flag = true;
-		while (flag){
-			String str = request.getHead();
-			if (str!="GET"){
-				flag = false;
-			}else {
-				WebResponse response = new WebResponse(socket.getOutputStream(),root+request.getUrl());
-				response.send();
-			}
-		}
+		WebResponse response = new WebResponse(socket.getOutputStream());
+		logger.info("get request from Socket {}",socket);		
+		Parse.parse(request,response);
 		socket.close();
+		logger.info("shut down Socket {}",socket);
 	}
 	
 	public void run(){

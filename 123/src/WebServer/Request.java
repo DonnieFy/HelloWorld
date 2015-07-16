@@ -8,7 +8,9 @@ public interface Request {
 	
 	public String getUrl();
 	
-	public String getHead();
+	public String getHead(String mm);
+	
+	public String getMethod();
 	
 	public void parse() throws IOException ;
 }
