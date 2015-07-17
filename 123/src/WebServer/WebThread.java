@@ -1,7 +1,6 @@
 package WebServer;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.Socket;
 
 import org.slf4j.LoggerFactory;
@@ -17,12 +16,16 @@ public class WebThread extends Thread{
 		this.socket = socket;
 	}
 	
-	public static void execute(Socket socket) throws IOException{
+	public static void execute(Socket socket) throws Exception{
 		WebRequest request = new WebRequest(socket.getInputStream());
 		WebResponse response = new WebResponse(socket.getOutputStream());
-		logger.info("get request from Socket {}",socket);		
-		Parse.parse(request,response);
-		socket.close();
+		FileHandler handler = new FileHandler ();
+		while(!CloseHandler.match(request)){
+			if (handler.match(request)){
+				handler.handle(request, response);
+			}
+		}		
+		socket.close();		
 		logger.info("shut down Socket {}",socket);
 	}
 	
@@ -30,7 +33,7 @@ public class WebThread extends Thread{
 		try {
 			execute(socket);
 		}
-		catch (IOException e) {
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

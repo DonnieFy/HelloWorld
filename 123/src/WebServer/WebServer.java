@@ -13,6 +13,7 @@ public class WebServer {
 	final static Logger logger = LoggerFactory.getLogger(WebServer.class);
 	
 	public static void main(String[] args) throws IOException{
+		
 		int port = 10001;
 		ServerSocket server = new ServerSocket(port);
 		logger.info("set up Server {}",port);

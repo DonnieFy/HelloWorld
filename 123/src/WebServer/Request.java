@@ -12,5 +12,4 @@ public interface Request {
 	
 	public String getMethod();
 	
-	public void parse() throws IOException ;
 }

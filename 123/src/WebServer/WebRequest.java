@@ -15,17 +15,18 @@ public class WebRequest implements Request{
 	private String str = null;
 	private InputStream input;
 	final static Logger logger = LoggerFactory.getLogger(WebRequest.class);
-	Map map = new HashMap();
+	Map<String, String> map = new HashMap<String, String>();
 	
-	public WebRequest(InputStream input){
+	public WebRequest(InputStream input) throws IOException{
 		this.input = input;
+		parse();
 	}
 	
 	public String getStr(){
 		return str;
 	}
 	
-	public String getHead(String mm){
+	public String getHead(String mm){		
 		if (map.containsKey(mm)){
 			return map.get(mm).toString();
 		}else return "";
@@ -39,7 +40,8 @@ public class WebRequest implements Request{
 		return method;
 	}
 	
-	public void parse() throws IOException {
+	private void parse() throws IOException {
+		
 		StringBuffer sb = new StringBuffer();
 		map.clear();
 		url = null;
@@ -53,11 +55,7 @@ public class WebRequest implements Request{
 			sb.append((char)c);
 		}
 		str = sb.toString();
-		if("\r\n ".equals(str)){
-			return ;
-		}
-		logger.info("get String {} from InputStream",str);
-		
+		logger.info("get String {} from InputStream",str);	
 		if (str.startsWith("GET")){
 			String[] st = str.split(" ");
 			url = st[1];
