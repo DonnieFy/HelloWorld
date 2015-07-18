@@ -10,11 +10,15 @@ import java.util.Map;
 import java.util.HashMap;
 import java.text.DateFormat;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
 public class FileHandler implements Handler{
 	
 	private String pathname = null;
 	private byte[] body = null;
 	private Map<Integer, String> error = new HashMap<Integer, String>();
+	final Logger logger = LoggerFactory.getLogger(FileHandler.class);
 	
 	public FileHandler(){
 		setError();
@@ -39,6 +43,7 @@ public class FileHandler implements Handler{
 		}
 		response.addBody(body);
 		response.send();
+		logger.info("send file from {}", pathname);
 	}
 	
 	private String parse(int i){

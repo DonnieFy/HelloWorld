@@ -12,21 +12,21 @@ import org.slf4j.Logger;
 public class WebRequest implements Request{
 	private String url = null;
 	private String method = null;
-	private String str = null;
 	private InputStream input;
 	final static Logger logger = LoggerFactory.getLogger(WebRequest.class);
 	Map<String, String> map = new HashMap<String, String>();
 	
 	public WebRequest(InputStream input) throws IOException{
 		this.input = input;
-		parse();
-	}
-	
-	public String getStr(){
-		return str;
 	}
 	
 	public String getHead(String mm){		
+		try {
+			parse();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 		if (map.containsKey(mm)){
 			return map.get(mm).toString();
 		}else return "";
@@ -42,11 +42,10 @@ public class WebRequest implements Request{
 	
 	private void parse() throws IOException {
 		
-		StringBuffer sb = new StringBuffer();
-		map.clear();
 		url = null;
-		method =null;
-		str = null;
+		method = null;
+		StringBuffer sb = new StringBuffer();
+		String str = null;
 		while (true){
 			int c = input.read();
 			if (c=='\t'||c=='\n'||c==-1){
@@ -55,11 +54,11 @@ public class WebRequest implements Request{
 			sb.append((char)c);
 		}
 		str = sb.toString();
-		logger.info("get String {} from InputStream",str);	
 		if (str.startsWith("GET")){
 			String[] st = str.split(" ");
 			url = st[1];
 			method = st[0];		
+			logger.info("get method GET {}", url);
 		}else {
 			String[] st = str.split(" ", 2);
 			if (st[0].contains(":")){

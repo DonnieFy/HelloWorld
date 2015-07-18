@@ -1,6 +1,5 @@
 package WebServer;
 
-import java.io.IOException;
 
 public interface Response {
 	

@@ -1,11 +1,9 @@
 package WebServer;
 
-import java.io.IOException;
+
 import java.net.Socket;
 
 import org.slf4j.LoggerFactory;
-
-import org.slf4j.LoggerFactory;	
 import org.slf4j.Logger;
 
 public class WebThread extends Thread{
