@@ -26,7 +26,7 @@ public class FileHandler implements Handler{
 
 	public boolean match(WebRequest request) {
 		
-		if ("GET".equals(request.getMethod())){
+		if ("GET".equals(request.getMethod())||"POST".equals(request.getMethod())){
 			return true;
 		}else return false;
 	}
