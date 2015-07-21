@@ -8,7 +8,6 @@ import java.util.Map;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-import com.sun.corba.se.spi.orb.StringPair;
 
 
 public class WebRequest implements Request{
@@ -26,7 +25,7 @@ public class WebRequest implements Request{
 	
 	public String getHead(String mm){		
 		try {
-			parse();
+			proccess();
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -44,14 +43,23 @@ public class WebRequest implements Request{
 		return method;
 	}
 	
-	private void parse() throws IOException {
+	public String getUser(){
+		return user;
+	}
+	
+	public String getPassword(){
+		return password;
+	}
+	
+	private void proccess() throws IOException  {
 		
 		url = null;
 		method = null;
 		user = null;
 		password = null;
-		int i = 0, c = input.read();
-		int offset = 1, len = input.available();
+		int i = 0, c = 0, offset = 0;
+		int len = input.available();
+		
 		byte b[] = new byte[len];
 		if (len>0) b[0] = (byte)c;
 		while (offset<len){
@@ -63,32 +71,41 @@ public class WebRequest implements Request{
 			while (true){
 				c = b[i];
 				i++;
-				if (c=='\t'||c=='\n'||i==len)	break;
 				sb.append((char)c);
+				if (c=='\t'||c=='\n'||i==len)	break;
 			}
 			str = sb.toString();
-			if ("".equals(str)||str==null)  break;
-			else logger.info("get string {}",str);
-			if (str.startsWith("GET")||str.startsWith("POST")){
-				String[] st = str.split(" ");
-				url = st[1];
-				method = st[0];		
-				map.clear();
-			}else if ("GET".equals(method)){
-				String[] st = str.split(" ", 2);
-				if (st[0].contains(":")){
-					st[0].replace(":", "");
-					map.put(st[0], st[1]);
-				}else  	break;
-			}
-			else if (str.contains("user")){
-				String st[] = str.split("&");
-				user = st[0].substring(st[0].indexOf("=")+1,st[0].length());
-				password = st[1].substring(st[1].indexOf("=")+1,st[1].length());
-				logger.info("user {} password {}",user,password);
-			}
+			logger.info("get string {}",str);
 			
+			if (str.startsWith("GET")||str.startsWith("POST")){
+				parseMethod(str);
+			}else if (str.contains("password")&&"POST".equals(method)){
+				parseUser(str);
+			}else if (str.contains(":")){
+				parseHead(str);
+			}
 		}
+	}	
+	private void parseMethod(String str) {
+		String[] st = str.split(" ");
+		url = st[1];
+		method = st[0];		
+		map.clear();
+	}
+	
+	private void parseHead(String str){
+		String[] st = str.split(" ", 2);
+		if (st[0].contains(":")){
+			st[0].replace(":", "");
+			map.put(st[0], st[1]);
+		}
+	}
+	
+	private void parseUser(String str) {
+		String st[] = str.split("&");
+		user = st[0].substring(st[0].indexOf("=")+1,st[0].length());
+		password = st[1].substring(st[1].indexOf("=")+1,st[1].length());
+		logger.info("user {} password {}",user,password);
 	}
 }	
 	

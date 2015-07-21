@@ -17,10 +17,10 @@ public class WebThread extends Thread{
 	public static void execute(Socket socket) throws Exception{
 		WebRequest request = new WebRequest(socket.getInputStream());
 		WebResponse response = new WebResponse(socket.getOutputStream());
-		FileHandler handler = new FileHandler ();
+		FileHandler handler = new FileHandler (request,response);
 		while(!CloseHandler.match(request)){
-			if (handler.match(request)){
-				handler.handle(request, response);
+			if (handler.match()){
+				handler.handle();
 			}
 		}		
 		socket.close();		

@@ -2,7 +2,7 @@ package WebServer;
 
 public class CloseHandler implements Handler{
 
-	public static boolean match(WebRequest request) {
+	public static boolean match(WebRequest request) throws Exception {
 		return "close".equals(request.getHead("Connection"));
 	}
 

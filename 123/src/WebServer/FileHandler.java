@@ -19,19 +19,26 @@ public class FileHandler implements Handler{
 	private byte[] body = null;
 	private Map<Integer, String> error = new HashMap<Integer, String>();
 	final Logger logger = LoggerFactory.getLogger(FileHandler.class);
+	private WebRequest request = null;
+	private WebResponse response = null;
+	
+	public FileHandler(WebRequest request, WebResponse response){
+		this.request = request;
+		this.response = response;
+	}
 	
 	public FileHandler(){
 		setError();
 	}
 
-	public boolean match(WebRequest request) {
+	public boolean match() {
 		
 		if ("GET".equals(request.getMethod())||"POST".equals(request.getMethod())){
 			return true;
 		}else return false;
 	}
 
-	public void handle(WebRequest request, WebResponse response) throws Exception {
+	public void handle() throws Exception {
 		
 		String root = "D:/MailMaster";
 		pathname = root + request.getUrl();
@@ -124,6 +131,10 @@ public class FileHandler implements Handler{
 	
 	private int getStatus() throws Exception{
 		
+		if ("/login".equals(request.getUrl())&&"POST".equals(request.getMethod())){
+			parseUser();
+			return 200;
+		}
 		File file = new File (pathname);
 		if (!file.exists()){
 			proccessError(404);
@@ -148,6 +159,23 @@ public class FileHandler implements Handler{
 		error.put(404, "Not Found");
 	}
 
+	public void parseUser(){
+		
+		DbConnect dc = null;
+		try {
+			dc = new DbConnect();
+			if (dc.isUser(request.getUser(),request.getPassword())) {
+				String str = "success";
+				body = str.getBytes();
+			}else {
+				String str = "failed";
+				body = str.getBytes();
+			} 
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	public void handle(Request request, Response response) {
 		// TODO Auto-generated method stub
 		
