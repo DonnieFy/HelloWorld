@@ -2,29 +2,38 @@ package WebServer;
 
 
 import java.net.Socket;
+import java.util.Map;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
 public class WebThread extends Thread{
 	private Socket socket;
+	private Map<String, Action> actions;
 	final static Logger logger = LoggerFactory.getLogger(WebThread.class);
 	
-	public WebThread(Socket socket){
+	public WebThread(Socket socket, Map<String, Action> actions){
 		this.socket = socket;
+		this.actions = actions;
 	}
-	
-	public static void execute(Socket socket) throws Exception{
+
+	public void execute(Socket socket) throws Exception{
 		WebRequest request = new WebRequest(socket.getInputStream());
 		WebResponse response = new WebResponse(socket.getOutputStream());
-		FileHandler handler = new FileHandler (request,response);
+		Action action = null;
 		while(!CloseHandler.match(request)){
-			if (handler.match()){
-				handler.handle();
+			String uri = request.getUrl();
+			if (actions.containsKey(uri)){
+				action = actions.get(uri);
+			}else {
+				action = new AllAction();
 			}
-		}		
-		socket.close();		
-		logger.info("shut down Socket {}",socket);
+			if("GET".equals(request.getMethod())){
+				action.onGet(request, response);
+			}
+		}
+			socket.close();		
+			logger.info("shut down Socket {}",socket);
 	}
 	
 	public void run(){

@@ -28,9 +28,11 @@ public class NewThread extends Thread{
 	//		is = new FileInputStream(file);
 			in = new InputStreamReader(socket.getInputStream());
 			
-		//	while (true){
+	//		while (true){
+				readRequest();
 				logic();
-	
+				
+			
 	/*		int len = (int)file.length();
 			byte[] b = new byte[len];
 			int offset = 0;
@@ -45,7 +47,7 @@ public class NewThread extends Thread{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			close();
+		//	close();
 		}		
 	}
 	public void close(){
@@ -59,18 +61,19 @@ public class NewThread extends Thread{
 			e.printStackTrace();
 		}		
 	}
-	public void logic() throws IOException{
-		readRequest();
+	public void logic() throws IOException{		
 		String[] req = request.toString().split(" ");
 		String filename = "";
 		if (req.length==3){
 			filename += req[1]; 
 		}
-		System.out.println(filename);
+	//	System.out.println(filename);
 		if (filename.endsWith("/")){
 			showDir(file+filename);	
 		}
-		else showFile(file+filename);
+		else if (!(filename=="")){
+			showFile(file+filename);
+		}
 	}
 	
 	public void readRequest() throws IOException{
@@ -82,7 +85,7 @@ public class NewThread extends Thread{
 			}
 			request.append((char)c);
 		}
-	//	System.out.println(request);
+		System.out.println(request);
 	}
 	
 	public void showDir(String pathname) throws IOException{
@@ -90,18 +93,18 @@ public class NewThread extends Thread{
 		String[] child = dir.list();
 		os.println("HTTP/1.0 200 sendFile");
 		os.println();
-		os.println("<html><body><table border=\"8\"><tr>");
+		os.println("<html><body><h1>"+pathname+"'s directory</h1><table border=\"8\">");
 	//	System.out.println(pathname);
 		int len = child.length;
 		for(int i=0; i<len; i++){	
 		//	System.out.println(child.length);
-			os.print("<td><b>");
+			File tempFile = new File(pathname+child[i]);
+			if (tempFile.isDirectory()) child[i] += "/";
+			os.print("<tr><td><b><a href='"+child[i]+"'>");
 			os.print(child[i]);
-			os.print("</b></td>");
-		//	os.println();
-		//	os.println("<br />");
+			os.print("</a></b></td></tr>");
 		}
-		os.println("</tr></table></body></html>");
+		os.println("</table></body></html>");
 		os.flush();
 	//	os.close();
 	}

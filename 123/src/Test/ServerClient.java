@@ -1,6 +1,7 @@
 package Test;
 import java.net.*;
 import java.io.*;
+import java.util.concurrent.*;
 
 
 
@@ -11,12 +12,15 @@ public class ServerClient {
 		int port = 10001;
 		ServerSocket serverSocket = null;
 		Socket socket = null;
+		ExecutorService pool = Executors.newFixedThreadPool(50);
 				
 		try {
 			serverSocket = new ServerSocket(port);
 			while (true){
 				socket = serverSocket.accept();
-				new NewThread(socket);
+				System.out.println("ok");
+				NewThread t = new NewThread(socket);
+				pool.execute(t);
 			}
 		}
 		catch (Exception e) {
@@ -24,6 +28,7 @@ public class ServerClient {
 			e.printStackTrace();
 		}finally{
 			try {	
+				pool.shutdown();
 				serverSocket.close();
 			}
 			catch (Exception e) {

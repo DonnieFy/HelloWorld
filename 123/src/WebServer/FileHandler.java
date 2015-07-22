@@ -20,34 +20,21 @@ public class FileHandler implements Handler{
 	private byte[] body = null;
 	private Map<Integer, String> error = new HashMap<Integer, String>();
 	final Logger logger = LoggerFactory.getLogger(FileHandler.class);
-	private WebRequest request = null;
-	private WebResponse response = null;
-	private boolean login = false;
-	private String admin = null;
 	private String root = "D:/MailMaster";
-	
-	public FileHandler(WebRequest request, WebResponse response){
-		this.request = request;
-		this.response = response;
-	}
+	private boolean flag = true;
 	
 	public FileHandler(){
 		setError();
 	}
 
-	public boolean match() {
-		
-		if ("GET".equals(request.getMethod())||"POST".equals(request.getMethod())){
-			return true;
-		}else return false;
-	}
-
-	public void handle() throws Exception {
+	public void handle(WebRequest request, WebResponse response) throws Exception {
 		
 		pathname = root + request.getUrl();
 		String header[] = {"Data: ","Server: ","Content-Length: ",
-				"Keep-Alive: ","Connection: ","Content-Type: "};		
-		response.setStatus(getStatus());
+				"Keep-Alive: ","Connection: ","Content-Type: "};	
+		if (flag){
+			response.setStatus(getStatus());
+		}	
 		for (int i=0; i<header.length; i++){
 			response.addHeader(header[i], parse(i));
 		}
@@ -81,6 +68,13 @@ public class FileHandler implements Handler{
 			}
 		}
 		return "";
+	}
+	public void setFlag(boolean flag){
+		this.flag = flag;
+	}
+	
+	public void setBody(byte[] body){
+		this.body = body;
 	}
 	
 	private void proccess() throws Exception{
@@ -133,14 +127,7 @@ public class FileHandler implements Handler{
 	}
 	
 	private int getStatus() throws Exception{
-		
-		if ("/login".equals(request.getUrl())&&"POST".equals(request.getMethod())){
-			parseUser();
-			return 200;
-		}else if ("/signup".equals(request.getUrl())&&"POST".equals(request.getMethod())){
-			newUser();
-			return 200;
-		}
+				
 		File file = new File (pathname);
 		if (!file.exists()){
 			proccessError(404);
@@ -163,42 +150,6 @@ public class FileHandler implements Handler{
 	private void setError(){
 		
 		error.put(404, "Not Found");
-	}
-
-	private void parseUser(){
-		
-		DbConnect dc = null;
-		try {
-			dc = new DbConnect();
-			if ((login = dc.isUser(request.getUser(),request.getPassword()))) {
-				String str = "success";
-				body = str.getBytes();
-				admin = request.getUser();
-			}else {
-				String str = "failed";
-				body = str.getBytes();
-			} 
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	private void newUser(){
-		
-		DbConnect dc = null;
-		try{
-			dc = new DbConnect();
-			if ((login=dc.newUser(request.getUser(), request.getPassword()))){
-				String str = "success";
-				body = str.getBytes();
-				admin = request.getUser();
-			}else {
-				String str = "failed";
-				body = str.getBytes();
-			}
-		}catch (Exception e){
-			e.printStackTrace();
-		}
 	}
 	
 	public void handle(Request request, Response response) {

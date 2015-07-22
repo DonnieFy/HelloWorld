@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 public class WebRequest implements Request  {
 	private String url = null;
 	private String method = null;
-	private String user = null;
-	private String password = null;
+	private User user = null;
+	private String session = null;
 	private InputStream input;
 	final static Logger logger = LoggerFactory.getLogger(WebRequest.class);
 	Map<String, String> map = new HashMap<String, String>();
@@ -24,8 +24,10 @@ public class WebRequest implements Request  {
 	}
 	
 	public String getSession(){
-		String str = map.get("Cookie") + map.get("User-Agent");
-		int st = str;
+		if (session!=null) return session;
+		session = map.get("Cookie") + map.get("User-Agent");
+		session = session.replace(" ","");
+		return session;
 	}
 	
 	public String getHead(String mm){		
@@ -42,12 +44,8 @@ public class WebRequest implements Request  {
 		return method;
 	}
 	
-	public String getUser(){
+	public User getUser(){
 		return user;
-	}
-	
-	public String getPassword(){
-		return password;
 	}
 	
 	public void proccess() throws IOException  {
@@ -55,7 +53,6 @@ public class WebRequest implements Request  {
 		url = null;
 		method = null;
 		user = null;
-		password = null;
 		int i = 0, c = 0, offset = 0;
 		int len = input.available();
 		
@@ -102,9 +99,10 @@ public class WebRequest implements Request  {
 	
 	private void parseUser(String str) {
 		String st[] = str.split("&");
-		user = st[0].substring(st[0].indexOf("=")+1,st[0].length());
-		password = st[1].substring(st[1].indexOf("=")+1,st[1].length());
-		logger.info("user {} password {}",user,password);
+		String username = st[0].substring(st[0].indexOf("=")+1,st[0].length());
+		String password = st[1].substring(st[1].indexOf("=")+1,st[1].length());
+		user = new User(username, password);
+		logger.info("user {} password {}",username,password);
 	}
 }	
 	
