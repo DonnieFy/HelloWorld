@@ -13,6 +13,7 @@ import java.text.DateFormat;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
+
 public class FileHandler implements Handler{
 	
 	private String pathname = null;
@@ -21,6 +22,9 @@ public class FileHandler implements Handler{
 	final Logger logger = LoggerFactory.getLogger(FileHandler.class);
 	private WebRequest request = null;
 	private WebResponse response = null;
+	private boolean login = false;
+	private String admin = null;
+	private String root = "D:/MailMaster";
 	
 	public FileHandler(WebRequest request, WebResponse response){
 		this.request = request;
@@ -40,7 +44,6 @@ public class FileHandler implements Handler{
 
 	public void handle() throws Exception {
 		
-		String root = "D:/MailMaster";
 		pathname = root + request.getUrl();
 		String header[] = {"Data: ","Server: ","Content-Length: ",
 				"Keep-Alive: ","Connection: ","Content-Type: "};		
@@ -134,6 +137,9 @@ public class FileHandler implements Handler{
 		if ("/login".equals(request.getUrl())&&"POST".equals(request.getMethod())){
 			parseUser();
 			return 200;
+		}else if ("/signup".equals(request.getUrl())&&"POST".equals(request.getMethod())){
+			newUser();
+			return 200;
 		}
 		File file = new File (pathname);
 		if (!file.exists()){
@@ -159,23 +165,42 @@ public class FileHandler implements Handler{
 		error.put(404, "Not Found");
 	}
 
-	public void parseUser(){
+	private void parseUser(){
 		
 		DbConnect dc = null;
 		try {
 			dc = new DbConnect();
-			if (dc.isUser(request.getUser(),request.getPassword())) {
+			if ((login = dc.isUser(request.getUser(),request.getPassword()))) {
 				String str = "success";
 				body = str.getBytes();
+				admin = request.getUser();
 			}else {
 				String str = "failed";
 				body = str.getBytes();
 			} 
-		}
-		catch (Exception e) {
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+	
+	private void newUser(){
+		
+		DbConnect dc = null;
+		try{
+			dc = new DbConnect();
+			if ((login=dc.newUser(request.getUser(), request.getPassword()))){
+				String str = "success";
+				body = str.getBytes();
+				admin = request.getUser();
+			}else {
+				String str = "failed";
+				body = str.getBytes();
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	
 	public void handle(Request request, Response response) {
 		// TODO Auto-generated method stub
 		

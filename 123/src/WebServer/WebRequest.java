@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 
 
 
-public class WebRequest implements Request{
+public class WebRequest implements Request  {
 	private String url = null;
 	private String method = null;
 	private String user = null;

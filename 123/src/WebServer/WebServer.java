@@ -17,7 +17,7 @@ public class WebServer {
 	
 	public static void main(String[] args) throws IOException{
 		
-		ServerSocket server = new ServerSocket(10086);
+		ServerSocket server = new ServerSocket(10010);
 		logger.info("set up Server");
 	//	ServerSocket server = ctx.getBean("Server",ServerSocket.class);
 		ExecutorService pool = Executors.newCachedThreadPool();
