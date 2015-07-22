@@ -23,13 +23,12 @@ public class WebRequest implements Request  {
 		this.input = input;
 	}
 	
+	public String getSession(){
+		String str = map.get("Cookie") + map.get("User-Agent");
+		int st = str;
+	}
+	
 	public String getHead(String mm){		
-		try {
-			proccess();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
 		if (map.containsKey(mm)){
 			return map.get(mm).toString();
 		}else return "";
@@ -51,7 +50,7 @@ public class WebRequest implements Request  {
 		return password;
 	}
 	
-	private void proccess() throws IOException  {
+	public void proccess() throws IOException  {
 		
 		url = null;
 		method = null;
