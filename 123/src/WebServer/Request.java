@@ -1,5 +1,7 @@
 package WebServer;
 
+import java.io.IOException;
+
 
 
 public interface Request {
@@ -10,4 +12,9 @@ public interface Request {
 	
 	public String getMethod();
 	
+	public void proccess() throws IOException;
+	
+	public User getUser();
+
+	public void setUrl(String string);
 }

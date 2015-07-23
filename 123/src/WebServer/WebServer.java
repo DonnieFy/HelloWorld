@@ -17,14 +17,15 @@ public class WebServer {
 	public static void main(String[] args) throws IOException{
 
 		Map<String, Action> actions = init();
-		ServerSocket server = new ServerSocket(10010);
+		ServerSocket server = new ServerSocket(10001);
+		FilterChain filter = new FilterChain();
 		logger.info("set up Server");
 	//	ServerSocket server = ctx.getBean("Server",ServerSocket.class);
 		ExecutorService pool = Executors.newCachedThreadPool();
 		boolean f = true;
 		while (f){
 			Socket socket = server.accept();
-			pool.execute(new WebThread(socket, actions));
+			pool.execute(new WebThread(socket, actions, filter));
 			logger.info("execute pool {}",socket);
 		}
 		server.close();
@@ -32,11 +33,13 @@ public class WebServer {
 	}
 	
 	public static Map<String, Action> init(){
-		LoginAction login = new LoginAction();
-		RegistAction regist = new RegistAction();
+		Action login = new LoginAction();
+		Action regist = new RegistAction();
+		Action logout = new LogoutAction();
 		Map<String, Action> actions = new HashMap<String,Action>(2);
 		actions.put(login.getUri(), login);
 		actions.put(regist.getUri(), regist);
+		actions.put(logout.getUri(), logout);
 		return actions;
 	}
 }

@@ -25,21 +25,21 @@ public class DbConnect {
 	
 	public boolean isUser(User user) throws SQLException{
 		
-		String sql = "select password from userlist where username = '"+user+"'";
+		String sql = "select password from userlist where username = '"+user.getUsername()+"'";
 		ResultSet rs = statement.executeQuery(sql);
 		if (!rs.next()) return false;
-		if (user.password.equals(rs.getString("password"))){
+		if (user.getPassword().equals(rs.getString("password"))){
 			return true;
 		}else return false;
 	}
 	
-	public boolean newUser(User user) throws SQLException{
+	public boolean addUser(User user) throws SQLException{
 		
 		String sql = "select password from userlist where username = '"+user+"'";
 		ResultSet rs = statement.executeQuery(sql);
-		if (rs.next()) return false;
-		sql = "insert into userlist values('"+user.username+"','"+user.password+
-				"','"+user.sex+"','"+user.email+"','"+user.birthday+"')";
+		if (rs.next()) { return false;}
+		sql = "insert into userlist values('"+user.getUsername()+"','"+user.getPassword()+
+				"','"+user.getSex()+"','"+user.getEmail()+"','"+user.getBirthday()+"')";
 		if (statement.executeUpdate(sql)==1){
 			return true;
 		}else return false;		

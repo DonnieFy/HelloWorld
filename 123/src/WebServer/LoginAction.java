@@ -1,14 +1,15 @@
 package WebServer;
 
 public class LoginAction extends AbstractAction implements Action {
-
+	private boolean isLogin = false;
+	
 	public String getUri() {
 		return "/login.html";
 	}
 
-	public void onPost(WebRequest request, WebResponse response) {
+	public void onPost(Request request, Response response) {
 		
-		FileHandler handler = new FileHandler();
+		Handler handler = new FileHandler();
 		DbConnect dc = null;
 		byte[] body = null;
 		try {
@@ -16,9 +17,11 @@ public class LoginAction extends AbstractAction implements Action {
 			if (dc.isUser(request.getUser())) {
 				String str = "success";
 				body = str.getBytes();
+				isLogin = true;
 			}else {
 				String str = "failed";
 				body = str.getBytes();
+				isLogin = false;
 			} 
 			handler.setFlag(false);
 			handler.setBody(body);
@@ -27,4 +30,13 @@ public class LoginAction extends AbstractAction implements Action {
 			e.printStackTrace();
 		}
 	}
+
+	public void onGet(Request request, Response response) {
+		super.onGet(request, response);
+	}
+
+	public boolean isLogin() {
+		return isLogin;
+	}
+	
 }

@@ -14,20 +14,12 @@ public class WebRequest implements Request  {
 	private String url = null;
 	private String method = null;
 	private User user = null;
-	private String session = null;
 	private InputStream input;
 	final static Logger logger = LoggerFactory.getLogger(WebRequest.class);
 	Map<String, String> map = new HashMap<String, String>();
 	
 	public WebRequest(InputStream input) throws IOException{
 		this.input = input;
-	}
-	
-	public String getSession(){
-		if (session!=null) return session;
-		session = map.get("Cookie") + map.get("User-Agent");
-		session = session.replace(" ","");
-		return session;
 	}
 	
 	public String getHead(String mm){		
@@ -48,11 +40,16 @@ public class WebRequest implements Request  {
 		return user;
 	}
 	
+	public void setUrl(String uri){
+		url = uri;
+	}
+	
 	public void proccess() throws IOException  {
 		
 		url = null;
 		method = null;
 		user = null;
+		map.clear();
 		int i = 0, c = 0, offset = 0;
 		int len = input.available();
 		
@@ -68,11 +65,10 @@ public class WebRequest implements Request  {
 				c = b[i];
 				i++;
 				sb.append((char)c);
-				if (c=='\t'||c=='\n'||i==len)	break;
+				if (c=='\n'||i==len)	break;
 			}
 			str = sb.toString();
-			logger.info("get string {}",str);
-			
+		//	logger.info("get string {}",str);		
 			if (str.startsWith("GET")||str.startsWith("POST")){
 				parseMethod(str);
 			}else if (str.contains("password")&&"POST".equals(method)){
@@ -81,20 +77,19 @@ public class WebRequest implements Request  {
 				parseHead(str);
 			}
 		}
-	}	
+	}	 
+
 	private void parseMethod(String str) {
 		String[] st = str.split(" ");
 		url = st[1];
 		method = st[0];		
-		map.clear();
 	}
 	
 	private void parseHead(String str){
 		String[] st = str.split(" ", 2);
-		if (st[0].contains(":")){
-			st[0].replace(":", "");
-			map.put(st[0], st[1]);
-		}
+		st[0] = st[0].replace(":", "");
+		st[1] = st[1].replace("\r\n", "");
+		map.put(st[0], st[1]);
 	}
 	
 	private void parseUser(String str) {

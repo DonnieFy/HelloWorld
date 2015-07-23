@@ -8,4 +8,7 @@ public interface Action {
 	
 	public void onPost(Request request, Response response);
 
+	public boolean isLogin();
+	
+	public boolean isLogout();
 }

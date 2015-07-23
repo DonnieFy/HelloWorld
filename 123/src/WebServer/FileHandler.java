@@ -2,12 +2,14 @@ package WebServer;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Random;
 import java.text.DateFormat;
 
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ public class FileHandler implements Handler{
 	
 	private String pathname = null;
 	private byte[] body = null;
+	private String session = null;
 	private Map<Integer, String> error = new HashMap<Integer, String>();
 	final Logger logger = LoggerFactory.getLogger(FileHandler.class);
 	private String root = "D:/MailMaster";
@@ -27,16 +30,18 @@ public class FileHandler implements Handler{
 		setError();
 	}
 
-	public void handle(WebRequest request, WebResponse response) throws Exception {
+	public void handle(Request request, Response response) throws Exception {
 		
 		pathname = root + request.getUrl();
+		session = request.getHead("Cookie");
 		String header[] = {"Data: ","Server: ","Content-Length: ",
 				"Keep-Alive: ","Connection: ","Content-Type: "};	
-		if (flag){
-			response.setStatus(getStatus());
-		}	
+		response.setStatus(getStatus());
 		for (int i=0; i<header.length; i++){
 			response.addHeader(header[i], parse(i));
+		}
+		if ("".equals(session)){
+			response.addHeader("Set-Cookie: ", "ID="+getRandomString());
 		}
 		response.addBody(body);
 		response.send();
@@ -128,6 +133,7 @@ public class FileHandler implements Handler{
 	
 	private int getStatus() throws Exception{
 				
+		if (!flag) return 200;
 		File file = new File (pathname);
 		if (!file.exists()){
 			proccessError(404);
@@ -151,15 +157,29 @@ public class FileHandler implements Handler{
 		
 		error.put(404, "Not Found");
 	}
-	
-	public void handle(Request request, Response response) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	public boolean match(Request request) {
-		// TODO Auto-generated method stub
+		try {
+			request.proccess();
+			return "close".equals(request.getHead("Connection"));
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
+	
+	private String getRandomString(){
+		String base = "1234567890abcdefghijklmnopqrstuvwxyz";
+		Random random = new Random();
+		String str = "";
+		for (int i=0; i<9; i++){
+			int n = random.nextInt(base.length());
+			str += base.charAt(n);
+		}
+		logger.info("get random {}",str);
+		return str;
+	}
+	
 
 }
