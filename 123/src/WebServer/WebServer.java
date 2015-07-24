@@ -33,13 +33,18 @@ public class WebServer {
 	}
 	
 	public static Map<String, Action> init(){
+
 		Action login = new LoginAction();
 		Action regist = new RegistAction();
 		Action logout = new LogoutAction();
-		Map<String, Action> actions = new HashMap<String,Action>(2);
+		Action userlist = new UserlistAction();
+		Action delete = new DeleteAction();
+		Map<String, Action> actions = new HashMap<String,Action>(5);
 		actions.put(login.getUri(), login);
 		actions.put(regist.getUri(), regist);
 		actions.put(logout.getUri(), logout);
+		actions.put(userlist.getUri(), userlist);
+		actions.put(delete.getUri(), delete);
 		return actions;
 	}
 }

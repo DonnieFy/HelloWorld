@@ -32,7 +32,9 @@ public class WebThread extends Thread{
 			if (actions.containsKey(uri)){
 				action = actions.get(uri);
 			}else {
-				action = new AllAction();
+				if (uri.startsWith("/delete.html")){
+					action = actions.get("/delete.html");
+				}else action = new AllAction();
 			}
 			if("GET".equals(request.getMethod())){
 				action.onGet(request, response);

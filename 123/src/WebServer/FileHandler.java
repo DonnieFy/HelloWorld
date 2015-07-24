@@ -33,6 +33,7 @@ public class FileHandler implements Handler{
 	public void handle(Request request, Response response) throws Exception {
 		
 		pathname = root + request.getUrl();
+		logger.info("{} from {}",request.getMethod(), pathname);
 		session = request.getHead("Cookie");
 		String header[] = {"Data: ","Server: ","Content-Length: ",
 				"Keep-Alive: ","Connection: ","Content-Type: "};	
@@ -45,7 +46,7 @@ public class FileHandler implements Handler{
 		}
 		response.addBody(body);
 		response.send();
-		logger.info("send file from {}", pathname);
+//		logger.info("send file from {}", pathname);
 	}
 	
 	private String parse(int i){

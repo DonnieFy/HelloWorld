@@ -18,6 +18,12 @@ public class FilterChain {
 		session = request.getHead("Cookie");
 		logger.info("{}",session);
 		String uri = request.getUrl();
+		if ("/userlist.html".equals(uri)&&sessionMap.containsKey(session)){
+			if (!"admin".equals(sessionMap.get(session))){
+				request.setUrl("/");
+				return;
+			}
+		}
 		if ("/jquery-1.3.2.min.js".equals(uri)){
 			return;
 		}

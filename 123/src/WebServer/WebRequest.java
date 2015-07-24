@@ -50,14 +50,12 @@ public class WebRequest implements Request  {
 		method = null;
 		user = null;
 		map.clear();
-		int i = 0, c = 0, offset = 0;
-		int len = input.available();
+		int i = 0;
+		byte c;
 		
-		byte b[] = new byte[len];
-		if (len>0) b[0] = (byte)c;
-		while (offset<len){
-			offset += input.read(b,offset,len - offset);
-		}
+		byte[] b = new  byte [1024*24];
+		int len = input.read(b);
+
 		while (i<len){
 			StringBuffer sb = new StringBuffer();
 			String str = null;
