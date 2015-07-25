@@ -24,6 +24,12 @@ public class FilterChain {
 				return;
 			}
 		}
+		
+		if ("/userdata.html".equals(uri)&&sessionMap.containsKey(session)){
+			request.setUsername(sessionMap.get(session));
+			return;
+		}
+		
 		if ("/jquery-1.3.2.min.js".equals(uri)){
 			return;
 		}

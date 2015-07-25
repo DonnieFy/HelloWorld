@@ -39,12 +39,14 @@ public class WebServer {
 		Action logout = new LogoutAction();
 		Action userlist = new UserlistAction();
 		Action delete = new DeleteAction();
-		Map<String, Action> actions = new HashMap<String,Action>(5);
+		Action userdata = new UserdataAction();
+		Map<String, Action> actions = new HashMap<String,Action>(6);
 		actions.put(login.getUri(), login);
 		actions.put(regist.getUri(), regist);
 		actions.put(logout.getUri(), logout);
 		actions.put(userlist.getUri(), userlist);
 		actions.put(delete.getUri(), delete);
+		actions.put(userdata.getUri(), userdata);
 		return actions;
 	}
 }

@@ -17,4 +17,8 @@ public interface Request {
 	public User getUser();
 
 	public void setUrl(String string);
+
+	public void setUsername(String string);
+
+	public String getUsername();
 }

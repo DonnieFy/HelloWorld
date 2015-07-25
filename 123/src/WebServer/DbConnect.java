@@ -54,7 +54,18 @@ public class DbConnect {
 	
 	public void deleteUser(String username) throws SQLException{
 		
-		String sql = "delete top 1 from userlist where username = '"+username+"'";
+		String sql = "delete from userlist where username = '"+username+"'";
 		statement.executeUpdate(sql);
 	}
+	
+	public User getUserData(String username) throws SQLException{
+		
+		String sql = "select * from userlist where username = '"+username+"'";
+		ResultSet rs = statement.executeQuery(sql);
+		rs.next();
+		User user = new User(username, rs.getString("password"),
+				rs.getString("sex"),rs.getString("email"),rs.getString("birthday"));
+		return user;
+	}
 }
+

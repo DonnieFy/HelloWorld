@@ -14,6 +14,7 @@ public class WebRequest implements Request  {
 	private String url = null;
 	private String method = null;
 	private User user = null;
+	private String username = null;
 	private InputStream input;
 	final static Logger logger = LoggerFactory.getLogger(WebRequest.class);
 	Map<String, String> map = new HashMap<String, String>();
@@ -40,8 +41,16 @@ public class WebRequest implements Request  {
 		return user;
 	}
 	
+	public String getUsername(){
+		return username;
+	}
+	
 	public void setUrl(String uri){
 		url = uri;
+	}
+	
+	public void setUsername(String username){
+		this.username = username;
 	}
 	
 	public void proccess() throws IOException  {
