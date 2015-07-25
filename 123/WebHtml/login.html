@@ -1,0 +1,41 @@
+<html>
+	<head>
+		<script type="text/javascript" src="/jquery-1.3.2.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				$("#submit").click(function(){
+					$.post("login.html",
+					{
+						user:$("#user").val(),
+						password:$("#password").val()
+						},
+						function(data,statusTxt){
+							if (data=="failed"){
+							 alert("’À∫≈ªÚ√‹¬Î¥Ì£°");
+							 window.location.href='/login.html';
+							}
+							 else if(data=="success"){
+							 window.location.href='/';
+							 alert("µ«¬Ω≥…π¶£°");
+							 	}
+						});
+					});
+				});
+		</script>	
+		<script>
+			function dosomething(){
+				window.location.href="/regist.html"
+			}
+		</script>
+	</head>
+	<div id="test">
+	<body>
+	<form action="/login.html" method="POST" name="form_name">
+		<p>User Name:<input type="text" name="user" id="user"/></p>
+		<p>Password :<input type="password" name="password" id="password"/></p>
+		<input type="submit" id="submit" value="sign in"/>
+		<button id="btn1" type="button" onclick="dosomething()">sign up</button>
+	</form>
+	</body>
+  </div>
+</html>

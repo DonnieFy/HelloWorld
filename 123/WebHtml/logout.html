@@ -1,0 +1,21 @@
+<html>
+	<head>
+		<script  type="text/javascript" src="/jquery-1.3.2.min.js"></script>
+		<script>
+			function dosomething(){
+				$.post("/logout.html","",
+					function(data,status){
+						if (data=="success"){
+							alert("×¢Ïú³É¹¦£¡");
+							window.location.href='/login.html';
+							}else {
+								window.location.href='/logout.html';
+								}
+						});
+				}
+		</script>	
+	</head>
+	<p>Logout? </p>
+	<input type="button" id="logouty" value="Yes" onclick="dosomething()" />
+	<input type="button" id="logoutn" value="No" onclick="location.href='/'" />
+</html>

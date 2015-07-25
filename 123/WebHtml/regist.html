@@ -1,0 +1,47 @@
+<html>
+	<head>
+		<script type="text/javascript" src="/jquery-1.3.2.min.js"></script>
+		<script>
+		function dosomething(){
+			with(document.all){
+				if(user.value==""){
+					alert("请输入用户名");
+					}else if (user.value.length<6){
+						alert("用户名过短！");
+				}else if(password.value!=password1.value){
+					alert("密码不一致");
+					}else if (password.value==""){
+						alert("请输入密码");
+						}else submit_();
+				}
+			}
+		function submit_(){
+			document.form1.submit();
+			$.post("regist.html",
+					{
+						user:$("#user").val(),
+						password:$("#password").val()
+						},
+						function(data,statusTxt){
+							if (data=="failed"){
+							 alert("注册失败！");
+							 window.location.href='/regist.html';
+							}
+							 else if(data=="success"){
+							 window.location.href='/';
+							 alert("注册成功！");
+							 	}
+						});
+			}
+	</script>
+	</head>
+<body>
+	<form action="/regist.html" method="post" name="form1">
+		<p>User Name:<input type="text" name="user" id="user"/></p>
+		<p>Password :<input type="password" name="password" id="password"/></p>
+		<p>Password :<input type="password" name="password1" id="password1"/></p>
+		<input type="button" id="submit1" value="sigh up" onclick="dosomething()"/>
+	</form>
+</body>	
+
+</html>
